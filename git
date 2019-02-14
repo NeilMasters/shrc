@@ -1,0 +1,20 @@
+#######################################################################
+#
+# alias tits to git and deal with status other than that just execute
+# as normal.
+# 
+# Why? I have this amazing ability to repeatedly miskey G with T.
+#
+# Example usage:
+# % tit status
+#
+#######################################################################
+
+tit() { 
+	if [[ $@ == "status" ]]; then
+		command git status
+	else
+		# maybe you have a cli for tit?
+		command "$@"
+	fi
+}
