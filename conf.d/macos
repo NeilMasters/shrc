@@ -1,0 +1,2 @@
+# Dump your trash on MacOS
+alias trash="sudo rm -rf ~/.Trash/*"
