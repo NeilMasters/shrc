@@ -1,6 +1,6 @@
 export ZSH=~/.oh-my-zsh
-ZSH_THEME="kphoen"
-plugins=(git symfony2 web-search)
+ZSH_THEME="af-magic"
+plugins=(git web-search)
 # CASE_SENSITIVE="true"
 # HYPHEN_INSENSITIVE="true"
 # DISABLE_AUTO_UPDATE="true"

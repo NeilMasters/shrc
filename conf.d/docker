@@ -30,5 +30,50 @@ function docker_up() {
 	done
 	fi
 
-	docker-compose up
+	docker-compose up -d >/dev/null 2>/dev/null
+	ECHO 'ALL CONTAINERS BROUGHT UP'
+}
+
+#######################################################################
+#
+# Kills all docker containers
+#
+# Example usage:
+# % docker_kill_all
+#
+#######################################################################
+
+function docker_kill_all() {
+	docker kill $(docker ps -q) >/dev/null 2>/dev/null
+	echo 'STOPPPED ALL DOCKER CONTAINERS'
+}
+
+#######################################################################
+#
+# Deletes all docker images
+#
+# Example usage:
+# % docker_rm
+#
+#######################################################################
+
+function docker_rm() {
+	docker rm $(docker ps -a -q) >/dev/null 2>/dev/null
+	docker rmi $(docker images -q) >/dev/null 2>/dev/null
+	echo 'DELETED ALL DOCKER CONTAINERS'
+}
+
+#######################################################################
+#
+# Stops all containers, deletes them and then brings them back up.
+#
+# Example usage:
+# % docker_refresh
+#
+#######################################################################
+
+function docker_refresh() {
+	docker_kill_all
+	docker_rm_containers
+	docker_up
 }
