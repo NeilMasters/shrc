@@ -1,0 +1,4 @@
+source ~/shrc/conf.d/oh-my-zsh
+source ~/shrc/conf.d/docker
+source ~/shrc/conf.d/git
+source ~/shrc/conf.d/sh
