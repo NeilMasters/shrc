@@ -1,0 +1,9 @@
+#######################################################################
+#
+# Switch version of PHP in use on macos via brew
+#
+#######################################################################
+
+function switchphp() {
+	brew unlink php && brew link php@$1
+}
