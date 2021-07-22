@@ -1,0 +1,29 @@
+#######################################################################
+#
+# Takes 2 screenshots and gives you a % value which represents the
+# the pixel difference
+#
+# Example usage:
+# % screenshot_compare https://www.google.com https://google.com
+# Depends on imagemagick(install seperately) and pageres-cli(installed
+# via this script)
+#
+# Reports something similar to:
+#  Generated 1 screenshot from 1 url and 1 size
+#  Generated 1 screenshot from 1 url and 1 size
+#  0%
+#
+#######################################################################
+
+function screenshot_compare() {
+	rm -f first.png
+	rm -f second.png
+
+	if [ ! -f node_modules/pageres-cli/cli.js ]; then
+    		npm install --no-save pageres-cli
+	fi
+
+	node_modules/pageres-cli/cli.js $1 --filename="first"
+	node_modules/pageres-cli/cli.js $2 --filename="second"
+	compare -metric PSNR first.png second.png difference.png
+}

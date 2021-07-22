@@ -3,3 +3,4 @@ source ~/shrc/conf.d/docker
 source ~/shrc/conf.d/git
 source ~/shrc/conf.d/sh
 source ~/shrc/conf.d/php
+source ~/shrc/conf.d/screenshot-compare
