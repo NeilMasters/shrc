@@ -1,2 +1,3 @@
 # Dump your trash on MacOS
 alias trash="sudo rm -rf ~/.Trash/*"
+alias clean-known-hosts="rm -rf ~/Library/Containers/com.sequel-ace.sequel-ace/Data/.keys/ssh_known_hosts_strict && rm -rf ~/.ssh/known_hosts"
