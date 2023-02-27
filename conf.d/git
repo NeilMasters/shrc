@@ -18,3 +18,49 @@ tit() {
 		command "$@"
 	fi
 }
+
+#######################################################################
+#
+# Disable-gha will alter specific workflows and add your current branch 
+# to the branches-ignore list.
+#
+# Why? If you are doing rapid prototyping it becomes a nuisance when
+# you are triggering 6 different workflows on each push.
+#
+# Example usage:
+# disable-gha
+#
+#######################################################################
+
+disable-gha () {
+	sed_install=$(which sed)
+
+	if [[ $sed_install != *"gnu"* ]]; then
+  		echo "You do not have GNU Sed installed which is required."
+  		echo "Suggested command: brew install gnu-sed"
+
+  		return 0
+	fi
+
+	current_branch=$(git symbolic-ref --short HEAD)
+
+	if [ $current_branch = "develop" ]; then
+	    echo "Do not run this on the main development branch."
+	
+		return 0
+	fi
+
+	current_status=$(git status --porcelain)
+
+	if [ $current_status != "" ]; then
+	    echo "You have uncommited changes. Commit them first and then retry."
+	    echo "Suggested command: git commit -am 'feat: commit message' "
+	
+		return 0
+	fi
+
+	git fetch
+	git cherry-pick 614605805e45a34166eca0435d6f853fac8eb5c7
+	find .github/workflows -type f -name "*.yaml" -print0 | xargs -0 sed -i "s/neils-make-stuff-easier-branch/${current_branch}/g"
+	git commit -am 'feat: altering neils test branch name to my current branch which I will squash!'
+}
