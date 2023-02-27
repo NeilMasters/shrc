@@ -9,7 +9,7 @@
 
 function docker_shell() {
     CONTAINER_ID=$(docker ps -f name=$1 --format {{.ID}})
-    docker exec -it $CONTAINER_ID /bin/bash
+    docker exec -it $CONTAINER_ID /bin/sh
 }
 
 #######################################################################
