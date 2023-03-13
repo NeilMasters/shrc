@@ -1,0 +1,13 @@
+#######################################################################
+#
+# awswv is an alias to shortcut running aws cli commands when used in
+# conjunction with aws-vault.
+# 
+# Example usage:
+# % awswv autoscaling describe-auto-scaling-instances
+#
+#######################################################################
+
+awswv () {
+    command aws-vault exec $AWS_PROFILE -- aws $@
+}
