@@ -11,3 +11,17 @@
 awswv () {
     command aws-vault exec $AWS_PROFILE -- aws $@
 }
+
+#######################################################################
+#
+# ssm is an alias to shortcut logging into an aws instance using ssm 
+# commands when used in conjunction with aws-vault.
+#
+# Example usage:
+# % ssm i-INSTANCE_ID
+#
+#######################################################################
+
+ssm () {
+    aws-vault exec $AWS_PROFILE -- aws ssm start-session --target $1
+}
