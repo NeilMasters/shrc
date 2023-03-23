@@ -5,3 +5,4 @@ source ~/shrc/conf.d/sh
 source ~/shrc/conf.d/php
 source ~/shrc/conf.d/screenshot-compare
 source ~/shrc/conf.d/aws
+source ~/shrc/conf.d/secret-commands

@@ -5,3 +5,4 @@ source ~/shrc/conf.d/sh
 source ~/shrc/conf.d/macos
 source ~/shrc/conf.d/php-macos
 source ~/shrc/conf.d/aws
+source ~/shrc/conf.d/secret-commands
