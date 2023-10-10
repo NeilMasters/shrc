@@ -1,5 +1,19 @@
 #######################################################################
 #
+# ssm-to-ecs is an alias to shortcut accessing an ecs container when
+# used in conjunction with ssm and aws-vault.
+#
+# Example usage:
+# % awswv autoscaling describe-auto-scaling-instances
+#
+#######################################################################
+
+ssm-to-ecs () {
+	aws-vault exec $AWS_PROFILE -- aws ecs execute-command --cluster $1 --task $2 --container $3 --command "/bin/bash" --interactive
+}
+
+#######################################################################
+#
 # awswv is an alias to shortcut running aws cli commands when used in
 # conjunction with aws-vault.
 # 
