@@ -39,3 +39,7 @@ awswv () {
 ssm () {
     aws-vault exec $AWS_PROFILE -- aws ssm start-session --target $1
 }
+
+ssm-qa () {
+    aws-vault exec $AWS_PROFILE_QA -- aws ssm start-session --target $1
+}
