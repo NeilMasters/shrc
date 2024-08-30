@@ -36,6 +36,8 @@ ssm-qa () {
 # bte-tilt will port forward to the local tilt service on bte. This
 # will allow you to see whats going on with the environment in an
 # identical manner to local environments.
+# 
+# After launching tilt will be available on localhost:9999
 #
 # Example usage:
 # % bte-tilt i-INSTANCE_ID
