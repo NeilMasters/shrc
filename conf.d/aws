@@ -1,16 +1,3 @@
-#######################################################################
-#
-# ssm-to-ecs is an alias to shortcut accessing an ecs container when
-# used in conjunction with ssm and aws-vault.
-#
-# Example usage:
-# % awswv autoscaling describe-auto-scaling-instances
-#
-#######################################################################
-
-ssm-to-ecs () {
-	aws-vault exec $AWS_PROFILE -- aws ecs execute-command --cluster $1 --task $2 --container $3 --command "/bin/bash" --interactive
-}
 
 #######################################################################
 #
@@ -42,4 +29,19 @@ ssm () {
 
 ssm-qa () {
     aws-vault exec $AWS_PROFILE_QA -- aws ssm start-session --target $1
+}
+
+#######################################################################
+#
+# bte-tilt will port forward to the local tilt service on bte. This
+# will allow you to see whats going on with the environment in an
+# identical manner to local environments.
+#
+# Example usage:
+# % bte-tilt i-INSTANCE_ID
+#
+#######################################################################
+
+bte-tilt () {
+    aws-vault exec $AWS_PROFILE -- aws ssm start-session --target $1 --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["10350"],"localPortNumber":["9999"]}'
 }
