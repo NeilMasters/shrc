@@ -1,3 +1,20 @@
+#######################################################################
+#
+# tunnel-to-rds is an alias to shortcut running an ssm tunnel to 
+# connect to a database instance
+#
+# Example usage:
+# % tunnel-to-rds "cluster/instance/proxy endpoint"
+#
+#######################################################################
+
+tunnel-to-rds () {
+    aws-vault exec $AWS_PROFILE -- aws ssm start-session \
+	--region eu-west-2 \
+	--document-name AWS-StartPortForwardingSessionToRemoteHost \
+	--target $BASTION_INSTANCE_ID \
+	--parameters host="$1",portNumber="3306",localPortNumber="3333"
+}
 
 #######################################################################
 #
@@ -11,6 +28,10 @@
 
 awswv () {
     command aws-vault exec $AWS_PROFILE -- aws $@
+}
+
+awswv-qa () {
+    command aws-vault exec $AWS_PROFILE_QA -- aws $@
 }
 
 #######################################################################
