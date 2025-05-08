@@ -1,5 +1,39 @@
 #######################################################################
 #
+# exec-on-ec2 is an alias will execute a command or series of commands
+# on any instance that has the ssm agent installed.
+#
+# It is a little bit ropey because aws cli command parsing is a 
+# staggering bag of pain but... you dont have to use send-command!
+#
+# Example usage:
+#
+# Boring list dir
+# % exec-on-ec2 i-whatever "ls -lh"
+# print OS details
+# % exec-on-ec2 i-whatever "lsb_release -sd && lsb_release -sr"
+#
+#######################################################################
+
+exec-on-ec2() {
+    INSTANCE_ID=$1
+    USER_CMD=$2
+
+    # We use sed here because the output from the cli is shockingly
+    # inconsistent.
+    sed '{
+      /session/d
+      /^[[:space:]]*$/d
+      s/[^0-9.a-zA-Z ]*//g
+    }' <<< "$(aws-vault exec $AWS_PROFILE -- \
+      aws ssm start-session \
+      --target "${INSTANCE_ID}" \
+      --document-name AWS-StartInteractiveCommand \
+      --parameters command="${USER_CMD}")"
+}
+
+#######################################################################
+#
 # tunnel-to-rds is an alias to shortcut running an ssm tunnel to 
 # connect to a database instance
 #
