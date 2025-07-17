@@ -50,6 +50,14 @@ tunnel-to-rds () {
 	--parameters host="$1",portNumber="3306",localPortNumber="3333"
 }
 
+tunnel-to-rds-qa () {
+    aws-vault exec $AWS_PROFILE_QA -- aws ssm start-session \
+        --region eu-west-2 \
+        --document-name AWS-StartPortForwardingSessionToRemoteHost \
+        --target $BASTION_INSTANCE_QA_ID \
+        --parameters host="$1",portNumber="3306",localPortNumber="3333"
+}
+
 #######################################################################
 #
 # awswv is an alias to shortcut running aws cli commands when used in
@@ -101,4 +109,21 @@ ssm-qa () {
 
 bte-tilt () {
     aws-vault exec $AWS_PROFILE -- aws ssm start-session --target $1 --document-name AWS-StartPortForwardingSession --parameters '{"portNumber":["10350"],"localPortNumber":["9999"]}'
+}
+
+#######################################################################
+#
+# SSM onto a single ecs task
+#
+# Example usage:
+# % ssm-to-ecs {cluster_name} {task_id} {container_name}
+#
+#######################################################################
+
+ssm-to-ecs () {
+	aws-vault exec $AWS_PROFILE -- aws ecs execute-command --cluster $1 --task $2 --container $3 --command "/bin/sh" --interactive
+}
+
+ssm-to-ecs-qa () {
+        aws-vault exec $AWS_PROFILE_QA -- aws ecs execute-command --cluster $1 --task $2 --container $3 --command "/bin/sh" --interactive
 }
