@@ -6,4 +6,6 @@ alias unixtime='date +"%s"'
 alias uuid="python -c 'import sys,uuid; sys.stdout.write(uuid.uuid4().hex)'"
 
 # Clean your known hosts
-alias clean-known-hosts="rm -rf ~/.ssh/known_hosts"
+alias clean-known-hosts="rm -rf ~/.ssh/known_hosts"i
+
+alias chmodx="chmod +x $1"
