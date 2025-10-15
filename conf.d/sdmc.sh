@@ -55,7 +55,7 @@ function getConnected() {
 }
 
 # Check for dependencies
-declare -a DEPENDENCIES=("jq" "jc" "sdm")
+declare -a DEPENDENCIES=("jq" "jc" "sdm" "awk")
 
 for DEPENDENCY in "${DEPENDENCIES[@]}"
 do
@@ -63,7 +63,8 @@ do
 
 	if [[ $HAS_DEP == "" ]];
 	then
-		message "You are missing the ${DEPENDENCY}, exiting..."
+		message "ERROR: You are missing the ${DEPENDENCY}."
+		message "ERROR: brew install ${DEPENDENCY}"
 		exit 1
 	fi
 done
@@ -84,25 +85,22 @@ then
     sdm login
 fi
 
+# Always disconnect to remove the possibility of accidentally connecting to the
+# wrong resource. Should in theory be impossible as its based on port
+# assigning.
 disconnect
 
-# Get any existing connections
-CONNECTED=$(getConnected)
+message "You are not currently connected to anything. Select from the list below to connect"
+message "or CTRL+C to exit"
 
-# If there is none get the list and offer up choices.
-if [[ $CONNECTED == "" ]];
-then
-	message "You are not currently connected to anything. Select from the list below to connect."
+declare -a CONNECTIONS=$(sdm status | jc --asciitable | jq -r '.[].datasource')
 
-	declare -a CONNECTIONS=$(sdm status | jc --asciitable | jq -r '.[].datasource')
-
-	select CONNECTION in $CONNECTIONS
-	do
-		sdm connect "${CONNECTION}"
-		CONNECTED=$(getConnected)
-		break
-	done
-fi
+select CONNECTION in $CONNECTIONS
+do
+	sdm connect "${CONNECTION}"
+	CONNECTED=$(getConnected)
+	break
+done
 
 # Launch
 launchClient "${CONNECTED}"
