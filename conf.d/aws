@@ -46,7 +46,7 @@ tunnel-to-rds () {
     aws-vault exec $AWS_PROFILE -- aws ssm start-session \
 	--region eu-west-2 \
 	--document-name AWS-StartPortForwardingSessionToRemoteHost \
-	--target $BASTION_INSTANCE_ID \
+	--target "$2" \
 	--parameters host="$1",portNumber="3306",localPortNumber="3333"
 }
 
@@ -54,7 +54,7 @@ tunnel-to-rds-qa () {
     aws-vault exec $AWS_PROFILE_QA -- aws ssm start-session \
         --region eu-west-2 \
         --document-name AWS-StartPortForwardingSessionToRemoteHost \
-        --target $BASTION_INSTANCE_QA_ID \
+        --target "$2" \
         --parameters host="$1",portNumber="3306",localPortNumber="3333"
 }
 
