@@ -98,8 +98,7 @@ fi
 ok "Disconnecting you from all resources"
 disconnect
 
-ok "You are not currently connected to anything. Select from the list below to connect"
-ok "or CTRL+C to exit"
+ok "Select from the list below to connect or CTRL+C to exit"
 
 declare -a CONNECTIONS=$(sdm status | jc --asciitable | jq -r '.[].datasource')
 
