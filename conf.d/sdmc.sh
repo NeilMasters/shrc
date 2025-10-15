@@ -5,11 +5,8 @@
 # The small script will handle strongdm login, connection handling and client 
 # opening for you.
 #
-# If you are a frequent database user and jump around a lot of clusters this
-# application might be helpful and speed you up.
-#
-# If you do make frequent use of it do yourself a favour and set SDM_EMAIL in
-# your rc file.
+# Coming soon:
+# automated requests
 #
 # requirements:
 # jq ~ brew install jq
@@ -27,8 +24,30 @@ function message() {
 }
 
 function launchClient() {
-	message "Launching your client to open ${1}"
+	message "OK: Launching your client to open ${1}"
 	open "mysql://${1}"
+}
+
+function disconnect() {
+	# disconnect() will disconnect you for any active connections and shutdown
+	# any active listening port forwards.
+	ACTIVE_LISTENS=$(ps -A | grep "[s]dm listen" | awk '{print $1}')
+
+	if [[ $ACTIVE_LISTEN != "" ]];
+	then
+		for ACTIVE_LISTEN in "${ACTIVE_LISTENS[@]}"
+		do
+			echo "OK: Shutting down active listen pid ${ACTIVE_LISTEN}"
+			kill -9 "${ACTIVE_LISTEN}"
+		done
+	fi
+
+	sdm disconnect -all
+}
+
+function connect() {
+	sdm listen "${CONNECTION}" &
+	sdm connect "${CONNECTION}"
 }
 
 function getConnected() {
@@ -57,13 +76,15 @@ if [[ $SDM_STATUS_RESPONSE == 'You are not authenticated. Please login again.' ]
 then
 	if [[ $SDM_EMAIL == "" ]];
 	then
-		message "You are not logged in and you have no SDM_EMAIL environmental variable set."
-		message "Open the sdm desktop application and login or set SDM_EMAIL as an environmental variable."	
+		message "ERROR: You are not logged in and you have no SDM_EMAIL environmental variable set."
+		message "ERROR: Add SDM_EMAIL to your ~/.*rc file."
 		exit 0
 	fi
 
     sdm login
 fi
+
+disconnect
 
 # Get any existing connections
 CONNECTED=$(getConnected)
