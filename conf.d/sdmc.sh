@@ -19,12 +19,17 @@
 #
 ###############################################################################
 
-function message() {
-	echo "${1}"
+
+function error() {
+	echo -e "\033[0;31mERROR: $1\033[0m"
+}
+
+function ok() {
+	echo -e "\033[0;32m$1\033[0m"
 }
 
 function launchClient() {
-	message "OK: Launching your client to open ${1}"
+	ok "Launching your client to open ${1}"
 	open "mysql://${1}"
 }
 
@@ -37,12 +42,12 @@ function disconnect() {
 	then
 		for ACTIVE_LISTEN in "${ACTIVE_LISTENS[@]}"
 		do
-			echo "OK: Shutting down active listen pid ${ACTIVE_LISTEN}"
+			ok "Shutting down active listen pid ${ACTIVE_LISTEN}"
 			kill -9 "${ACTIVE_LISTEN}"
 		done
 	fi
 
-	sdm disconnect -all
+	sdm disconnect -all >> /dev/null 2>&1
 }
 
 function connect() {
@@ -63,8 +68,9 @@ do
 
 	if [[ $HAS_DEP == "" ]];
 	then
-		message "ERROR: You are missing the ${DEPENDENCY}."
-		message "ERROR: brew install ${DEPENDENCY}"
+		error "You are missing the ${DEPENDENCY}."
+		error "brew install ${DEPENDENCY}"
+		error "exiting..."
 		exit 1
 	fi
 done
@@ -77,8 +83,9 @@ if [[ $SDM_STATUS_RESPONSE == 'You are not authenticated. Please login again.' ]
 then
 	if [[ $SDM_EMAIL == "" ]];
 	then
-		message "ERROR: You are not logged in and you have no SDM_EMAIL environmental variable set."
-		message "ERROR: Add SDM_EMAIL to your ~/.*rc file."
+		error "You are not logged in and you have no SDM_EMAIL environmental variable set."
+		error "Add SDM_EMAIL to your ~/.*rc file."
+		error "exiting..."
 		exit 0
 	fi
 
@@ -88,19 +95,27 @@ fi
 # Always disconnect to remove the possibility of accidentally connecting to the
 # wrong resource. Should in theory be impossible as its based on port
 # assigning.
+ok "Disconnecting you from all resources"
 disconnect
 
-message "You are not currently connected to anything. Select from the list below to connect"
-message "or CTRL+C to exit"
+ok "You are not currently connected to anything. Select from the list below to connect"
+ok "or CTRL+C to exit"
 
 declare -a CONNECTIONS=$(sdm status | jc --asciitable | jq -r '.[].datasource')
 
 select CONNECTION in $CONNECTIONS
 do
-	sdm connect "${CONNECTION}"
+	sdm connect "${CONNECTION}" >> /dev/null 2>&1
 	CONNECTED=$(getConnected)
 	break
 done
+
+if [[ $CONNECTED == "" ]];
+then
+	error "We could not connect you or you made an invalid choice."
+	error "exiting..."
+	exit 0
+fi
 
 # Launch
 launchClient "${CONNECTED}"
