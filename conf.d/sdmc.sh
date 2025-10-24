@@ -6,12 +6,17 @@
 # opening for you.
 #
 # requirements:
-# brew install jq jc dialog awk
-# sdm cli ~ sdm desktop -> click your profile picture -> actions -> 
+# 1. brew install jq jc dialog awk
+# 2. sdm cli ~ sdm desktop -> click your profile picture -> actions -> 
 # install sdm in PATH
+# 3. a registered application that can open mysql:// paths
 #
 # usage:
 # $ sdmc (connect|request)
+#
+# problems:
+# certain clients do not install a handler for opening mysql:// such as 
+# dbeaver. I need to wire in a manual call.
 #
 ###############################################################################
 
