@@ -17,6 +17,7 @@
 # problems:
 # certain clients do not install a handler for opening mysql:// such as 
 # dbeaver. I need to wire in a manual call.
+# not all linux distros alias `open` to `openvt`, I need to add an OS check.
 #
 ###############################################################################
 
