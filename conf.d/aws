@@ -90,6 +90,17 @@ ssm () {
     aws-vault exec $AWS_PROFILE -- aws ssm start-session --target $1
 }
 
+ssmsso() {
+    local name="$1"
+    local id=$(aws ec2 describe-instances --profile "${AWS_PROFILE}" \
+      --filters "Name=tag:Name,Values=$name" "Name=instance-state-name,Values=running" \
+      --query "Reservations[0].Instances[0].InstanceId" --output text)
+
+    [[ "$id" == "None" || -z "$id" ]] && { echo "No running instance named '$name'"; return 1; }
+
+    aws ssm start-session --profile "${AWS_PROFILE}" --target "$id"
+}
+
 ssm-qa () {
     aws-vault exec $AWS_PROFILE_QA -- aws ssm start-session --target $1
 }
@@ -126,4 +137,8 @@ ssm-to-ecs () {
 
 ssm-to-ecs-qa () {
         aws-vault exec $AWS_PROFILE_QA -- aws ecs execute-command --cluster $1 --task $2 --container $3 --command "/bin/sh" --interactive
+}
+
+aws-ecr-login () {
+	aws ecr get-login-password --region "${2:-eu-west-2}" | docker login --username AWS --password-stdin "${1}.dkr.ecr.${2:-eu-west-2}.amazonaws.com"
 }
